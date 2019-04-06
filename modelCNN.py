@@ -25,10 +25,7 @@ from keras.losses import categorical_crossentropy
 import statystyki
 import time
 
-
 dane= 'data\\trainMNF.pickle'
-
-
 #callbacks
 mcp = ModelCheckpoint('best_weights', monitor='val_loss', save_best_only=True, save_weights_only=False)
 csv_logger = CSVLogger('training.log')

@@ -145,13 +145,12 @@ def extract(raster_in, mask, class_nb, class_names, out_file_pickle, out_file_cs
     """
     Extract values from raster file. Saves into csv and pickle file.
 
-    :param raster_in: in raster to extract values
-    :param mask: mask with rasterised training data
-    :param class_nb: number of classes to extract values
-    :param class_names: class names to extract values
-    :param out_file_csv: output csv
-    :param out_file_pickle: output pickle
-    :return: output csv, pickle
+    raster_in: in raster to extract values
+    mask: mask with rasterised training data
+    class_nb: number of classes to extract values
+    class_names: class names to extract values
+    out_file_csv: output csv
+    out_file_pickle: output pickle
     """
     drivers_raster = gdal.GetDriverByName('ENVI')
     drivers_raster.Register()
