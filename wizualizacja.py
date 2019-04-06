@@ -3,33 +3,36 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
 
+def plot_history(history):
+    hist = pd.read_csv(history, sep=",")
+    loss_list = hist.loss
+    val_loss_list = hist.val_loss
+    acc_list = hist.acc
+    val_acc_list = hist.val_acc
 
-dane = 'ekstrakcja_przyklad_clean.pickle'
-dane_table = pd.read_pickle(dane)
+    if len(loss_list) == 0:
+        print('Loss is missing in history')
+        return
 
-print(dane_table.head())
-print(list(dane_table))
+    epochs = range(0, (hist.epoch.tail(1).values[0].astype(int) + 1))
 
+    fig, ax = plt.subplots(1, 2, figsize=(16, 8))
+    ax[0].plot(epochs, loss_list, 'b',
+               label='trening')
+    ax[0].plot(epochs, val_loss_list, 'g',
+               label='walidacja')
+    ax[0].set_title('Funkcja kosztu(loss)')
+    ax[0].set_xlabel('Epoki')
+    ax[0].set_ylabel('Loss')
+    ax[0].legend()
+    ax[1].plot(epochs, acc_list, 'b',
+               label='trening')
+    ax[1].plot(epochs, val_acc_list, 'g',
+               label='walidacja')
+    ax[1].set_title('Dokładność całkowita')
+    ax[1].set_xlabel('Epoki')
+    ax[1].set_ylabel('OA')
+    ax[1].legend()
 
-count = Counter(dane_table['klasa'])
-print(count.most_common())
-mck=count.keys()
-mcv=count.values()
-
-sum =0
-for i in mcv:
-    sum = sum + i
-srednia = sum/(len(mcv))
-# histogram = plt.figure(figsize = (6, 4))
-# plt.bar(mck, mcv, orientation = 'vertical', color  = 'orange')
-# plt.xticks(rotation=90, size = 8)
-# plt.subplots_adjust(bottom = 0.28, top = 0.99)
-# plt.axhline(y = srednia, color = 'r', ls = 'dashed')
-# plt.show(histogram)
-
-dane_x = dane_table.loc[16238, 'ekstrakcja']
-dane_y = np.arange(1, 431, 1)
-print(dane_x, dane_y)
-plt.figure()
-plt.plot(dane_y, dane_x)
-plt.show()
+    fig.savefig('model_history.png')
+    plt.show()

@@ -64,7 +64,7 @@ def read_data_CNN(data, value_field, class_field, spatial_index_field):
     x_trening = dane_test[0][value_field]
     x_test = dane_test[1][value_field]
     y_trening = dane_test[0][class_field]
-    y_test = dane_test[0][class_field]
+    y_test = dane_test[1][class_field]
 
     print('reshaping data ...')
     feature_dim = len(x_trening.values[0])
