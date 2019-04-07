@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import pandas as pd
-import copy
-import random
-import os
 from sklearn.preprocessing import LabelEncoder
-#from keras.utils import to_categorical
+
 
 def spatial_sample(data_to_split, field, training_data_size):
     unique_index = pd.unique(data_to_split[field])
-    training = np.random.choice(unique_index, np.ceil(unique_index.shape[0]*training_data_size).astype('int_'),
+    training = np.random.choice(unique_index, np.ceil(unique_index.shape[0] * training_data_size).astype('int_'),
                                 replace=False)
-    test = unique_index[np.isin(unique_index, training)==False]
+    test = unique_index[np.isin(unique_index, training) == False]
     return training, test
 
-def spatial_stratified_sample(data, field, class_field_name='klasa', training_data_size = 0.7, save=False):
+
+def spatial_stratified_sample(data, field, class_field_name='klasa', training_data_size=0.7, save=False):
     print('dividing data ...')
     training_index = np.array([-1])
     test_index = np.array([-1])
@@ -34,11 +32,6 @@ def spatial_stratified_sample(data, field, class_field_name='klasa', training_da
     return training_df, test_df
 
 
-def dane_do_klasyfikacji(dane_do_przeksztalcenia):
-    macierz = np.array(dane_do_przeksztalcenia)
-    return macierz
-
-
 def label_encod(data_to_encode):
     print('encoding data ...')
     le = LabelEncoder()
@@ -56,8 +49,8 @@ def label_encod(data_to_encode):
 
     return np.array(encoded)
 
-def read_data_CNN(data, value_field, class_field, spatial_index_field):
 
+def read_data_CNN(data, value_field, class_field, spatial_index_field):
     df = pd.read_pickle(data)
     dane_test = spatial_stratified_sample(df, spatial_index_field)
 
@@ -76,6 +69,7 @@ def read_data_CNN(data, value_field, class_field, spatial_index_field):
     y_te = labels_en[1]
 
     return X_trening, X_test, y_tr, y_te
+
 
 def read_data(data, value_field, class_field, spatial_index_field):
     df = pd.read_pickle(data)

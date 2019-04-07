@@ -12,7 +12,7 @@ from sklearn.metrics import accuracy_score, cohen_kappa_score, f1_score, \
     confusion_matrix, classification_report
 import pandas as pd
 import time
-import MyCallbacks
+import my_callbacks
 
 def CNN_model(X_training, X_test, y_training, y_test, n_epochs=100, batch_size=256,
               model_name='model', history_file='model_accuracies.csv',
@@ -22,9 +22,9 @@ def CNN_model(X_training, X_test, y_training, y_test, n_epochs=100, batch_size=2
         model_name = model_name + str(1)
 
     csv_logger = CSVLogger('model_training.log')
-    plot_losses = MyCallbacks.PlotLosses()
-    metrics = MyCallbacks.Metrics()
-    f1_accuracy = MyCallbacks.F1Metric()
+    plot_losses = my_callbacks.PlotLosses()
+    metrics = my_callbacks.Metrics()
+    f1_accuracy = my_callbacks.F1Metric()
     earlystop = EarlyStopping(monitor='val_acc', patience=10,
                               mode='auto')
     adam = Adam(lr=0.00001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)

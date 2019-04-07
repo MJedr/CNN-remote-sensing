@@ -1,17 +1,9 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Aug  8 11:11:53 2018
-
-@author: Marcysia
-"""
 from gdal import ogr
 import os
 from osgeo import gdal, gdalnumeric, gdalconst
 import numpy as np
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder, LabelEncoder
-import random
-import copy
 
 
 def open_envi_array(img):
@@ -140,7 +132,6 @@ def rasterize(in_raster, out_raster_name, shp_in):
         print("Success")
 
 
-
 def extract(raster_in, mask, class_nb, class_names, out_file_pickle, out_file_csv):
     """
     Extract values from raster file. Saves into csv and pickle file.
@@ -162,17 +153,17 @@ def extract(raster_in, mask, class_nb, class_names, out_file_pickle, out_file_cs
     data_mask = band_mask.ReadAsArray(0, 0)
 
     coords = np.nonzero(data_mask)
-    new_coords = np.array([0,0])
-    for i in range(len(coords[0])): # reads coordinates from input raster
+    new_coords = np.array([0, 0])
+    for i in range(len(coords[0])):  # reads coordinates from input raster
         m = np.array([coords[0][i], coords[1][i]])
         new_coords = np.vstack((new_coords, m))
 
-    np.delete(new_coords, 0, 0) # removers first empty row
+    np.delete(new_coords, 0, 0)  # removers first empty row
 
     pixel_class = ([data_mask[x, y] for x, y in new_coords])
     px_vals = [[] for x in range(class_nb)]
     for nb, x in enumerate(pixel_class):
-        px_vals[x-1].append(new_coords[nb])
+        px_vals[x - 1].append(new_coords[nb])
 
     data = []
     band_mask_index = inmask.GetRasterBand(1)
@@ -183,9 +174,10 @@ def extract(raster_in, mask, class_nb, class_names, out_file_pickle, out_file_cs
         for counter, i in enumerate(coord_list_class):
             x, y = int(i[0]), int(i[1])
             bands = [raster.GetRasterBand(i) for i in range(1, raster.RasterCount + 1)]
-            pix_val = np.squeeze(np.array([gdalnumeric.BandReadAsArray(band, y, x, 1, 1) for band in bands]).astype('int64'))
-            pixel_extract = [x] + [y] + [pix_val] +['{0}'.format(class_names[class_id])] +\
-                        [int(band_mask_index.ReadAsArray(y, x, 1, 1))]
+            pix_val = np.squeeze(
+                np.array([gdalnumeric.BandReadAsArray(band, y, x, 1, 1) for band in bands]).astype('int64'))
+            pixel_extract = [x] + [y] + [pix_val] + ['{0}'.format(class_names[class_id])] + \
+                            [int(band_mask_index.ReadAsArray(y, x, 1, 1))]
             data.append(pixel_extract)
             print('extracted', round((counter + 1) / len(coord_list_class), 2),
                   '% form class {0}'.format(class_names[class_id]))
@@ -198,7 +190,7 @@ def extract(raster_in, mask, class_nb, class_names, out_file_pickle, out_file_cs
     index = [x[4] for x in data]
 
     df = pd.DataFrame(list(zip(x, y, values, class_name, index)),
-                      columns=['x', 'y','coordinates', 'values', 'class', 'index'])
+                      columns=['x', 'y', 'coordinates', 'values', 'class', 'index'])
 
     print(df.loc[:, 'class'].value_counts())
     df.to_csv(out_file_csv)
